@@ -5,7 +5,6 @@ import {  BoldText, SurveyConatiner, InfoContainer,Middlebutton } from '../../..
 export default function CheckSubmit() {
     const Context = useContext(SurveyContext)
     const {tempBreak, checkSubmit} = Context
-    console.log(tempBreak)
     return (
         <>
         <InfoContainer>
@@ -16,7 +15,7 @@ export default function CheckSubmit() {
                     If 60 main survey data have been collected, click the final Move to Next button.
                 </p>
                 <br/><br/>
-                    <BoldText>Main Survey : {Object.keys(tempBreak).length} / 60</BoldText>
+                    <BoldText>Main Survey : {Object.keys(tempBreak).length} / 20</BoldText>
                 <br/>
             </SurveyConatiner>
                 <form onSubmit={(e) => {checkSubmit(e); e.preventDefault();}}>

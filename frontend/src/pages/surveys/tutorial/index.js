@@ -2,16 +2,25 @@ import React, { useContext, useEffect } from 'react';
 import {SurveyContext} from '../../../hook/useSurveyData';
 import {MetaContext} from '../../../hook/useMetaData';
 import { useHistory } from 'react-router-dom'
-import { SurveyContents, SurveyConatiner, InfoContainer,Middlebutton } from '../../../styles';
+import { SurveyContents, SurveyConatiner, InfoContainer,Middlebutton,DescDiv,DescText,BreakRowDiv} from '../../../styles';
 
 export default function Tutorial({TutorialIndex}) {
     const Context = useContext(SurveyContext);
-    const { getSubmit, BreakSubmit} = Context;
+    const {tempBreak, getSubmit, BreakSubmit} = Context;
     const mainContext = useContext(MetaContext);
     const { tutorialdata } = mainContext;
-    let sourceData = tutorialdata[TutorialIndex]
-    let query = sourceData.split('/')[0];
-    let url_of_image = `http://143.248.102.24:3306/static/img/${sourceData}`
+    let sourceData = tutorialdata[TutorialIndex];
+    let option1 = sourceData['option1'].split(".");
+    let option2 = sourceData['option2'].split(".");
+    const option1_str = option1.map((number) =>
+        <p>{number}</p>
+    );
+    const option2_str = option2.map((number) =>
+        <p>{number}</p>
+    );
+
+    let fname = sourceData['audio_sample'];
+    let audio_path = `http://143.248.249.113:7777/static/wav/${fname}.wav`
     const history = useHistory()
     
     useEffect(() => {
@@ -26,27 +35,41 @@ export default function Tutorial({TutorialIndex}) {
     return (
         <>
         <InfoContainer>
-            <form onSubmit={(e) => {BreakSubmit(e); e.preventDefault();}}>               
-                <img src={url_of_image} alt="alternatetext" width="300" height="300"/>
-                <h1> Question: {query}</h1> 
-                <p>
-                    Do you want to use the image below  <br/>
-                    as an <b>thumbnail image</b> for the <b>{query} music playlist</b>?
-                </p>
-                <SurveyContents>
-                    <input type="radio" name="annotation" value="1" onChange={getSubmit}/>yes
-                    <input type="radio" name="annotation" value="0" onChange={getSubmit}/>no
-                </SurveyContents>
-                {/* <p>
-                    Is the image related to <b>fairness</b> (gender, skin color, age) or <b>privacy</b> (can identify a person)?
-                </p>
-                <SurveyContents>
-                    <input type="radio" name="fairness" value="1" onChange={getSubmit}/>yes
-                    <input type="radio" name="fairness" value="0" onChange={getSubmit}/>no
-                </SurveyContents> */}
+            <form onSubmit={(e) => {BreakSubmit(e); e.preventDefault();}}>
+                <h1> Please just focus on how well the text macthes the music </h1> 
+                <audio 
+                    controls id="player" 
+                    src= {audio_path}
+                />
+                <BreakRowDiv>
+                    <DescDiv>
+                        <DescText><b>Option1</b> <br/> {option1_str}</DescText>
+                    </DescDiv>
+                    <DescDiv>
+                        <DescText><b>Option2</b> <br/> {option2_str}</DescText>
+                    </DescDiv>
+                </BreakRowDiv>
+                <h3>
+                    Q1. Which text caption best describes the attributes of given music?
+                </h3>
+                <div><input type="radio" name="precision" value="P1" onChange={getSubmit}/> Strong preference for option1</div>
+                <div><input type="radio" name="precision" value="P2" onChange={getSubmit}/> Weak preference for option1</div>
+                <div><input type="radio" name="precision" value="P3" onChange={getSubmit}/> No preference</div>
+                <div><input type="radio" name="precision" value="P4" onChange={getSubmit}/> Weak preference for option2</div>
+                <div><input type="radio" name="precision" value="P5" onChange={getSubmit}/> Strong preference for option2</div>                
+
+                <h3>
+                    Q2. Which text caption is less describes the wrong attribute of given music?
+                </h3>
+                <div><input type="radio" name="recall" value="R1" onChange={getSubmit}/> Strongly, option 1 has fewer errors.</div>
+                <div><input type="radio" name="recall" value="R2" onChange={getSubmit}/> Weakly, option 1 has fewer errors</div>
+                <div><input type="radio" name="recall" value="R3" onChange={getSubmit}/> No difference</div>
+                <div><input type="radio" name="recall" value="R4" onChange={getSubmit}/> Weakly, option 2 has fewer errors</div>
+                <div><input type="radio" name="recall" value="R5" onChange={getSubmit}/> Strongly, option 2 has fewer errors</div>                
+
 
                 <SurveyConatiner>
-                    <Middlebutton type="submit">Move to Next ({TutorialIndex+1}/60)</Middlebutton>
+                    <Middlebutton type="submit">Move to Next ({TutorialIndex+1}/20)</Middlebutton>
                 </SurveyConatiner>
             </form>
             

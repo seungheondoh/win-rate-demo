@@ -31,6 +31,13 @@ export const Title = styled.span `
 `;
 
 
+export const DescContainer = styled.div`
+    width: 80%;
+    background: rgba(250,250,250,1);
+    margin: 20px;
+`;
+
+
 export const BoldText = styled.div`
     font-weight : bold;
     font-size : 18px;
@@ -180,6 +187,24 @@ export const ColumnsDiv = styled.div `
     align-items: left;
 `;
 
+export const DescDiv = styled.div`
+    width: 500px;
+    margin-left : 30px;
+    border: 10px;
+    display : flex;
+    background-color: rgba(240,240,240,1);
+    border-radius: 10px;
+    flex-direction: column;
+    align-items: left;
+`;
+
+
+export const DescText = styled.div`
+    margin: 20px;
+    font-size: 15px;
+    text-align: left;
+`;
+
 export const DefaultButton = styled.button `
     cursor: pointer;
     background: none;
@@ -298,7 +323,7 @@ export const BreakRowDiv = styled.div `
     display : flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom : 20px;
+    margin : 20px;
 `;
 
 

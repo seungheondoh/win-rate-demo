@@ -23,6 +23,7 @@ const SurveyProvider = (props) => {
         endTime : new Date(),
         breakSurvey: {},
         finalSubmit : false,
+        datasets : []
     });
 
     // expdata from json data
@@ -38,34 +39,34 @@ const SurveyProvider = (props) => {
 
     //BreakSurvey
     const [breakData, setBreakData] = useState({
-        trial_id : "",
-        annotation : "",
-        fairpriv : "",
+        precision : "",
+        recall : "",
     });
 
-    function onInput(e){
-        if(e.target.id === 'test0'){
-            const temp = e.target.value
-            setBreakData(breakData => ({...breakData, Test0 : temp}))
-        }else if(e.target.id === 'test1'){
-            const temp = e.target.value
-            setBreakData(breakData => ({...breakData, Test1 : temp}))
-        }else if(e.target.id === 'test2'){
-            const temp = e.target.value
-            setBreakData(breakData => ({...breakData, Test2 : temp}))
-        }else if(e.target.id === 'test3'){
-            const temp = e.target.value
-            setBreakData(breakData => ({...breakData, Test3 : temp}))
-        }else if(e.target.id === 'test4'){
-            const temp = e.target.value
-            setBreakData(breakData => ({...breakData, Test4 : temp}))
-        }
-    }
+    // function onInput(e){
+    //     console.log(e.target.id);
+    //     if(e.target.id === 'test0'){
+    //         const temp = e.target.value
+    //         setBreakData(breakData => ({...breakData, Test0 : temp}))
+    //     }else if(e.target.id === 'test1'){
+    //         const temp = e.target.value
+    //         setBreakData(breakData => ({...breakData, Test1 : temp}))
+    //     }else if(e.target.id === 'test2'){
+    //         const temp = e.target.value
+    //         setBreakData(breakData => ({...breakData, Test2 : temp}))
+    //     }else if(e.target.id === 'test3'){
+    //         const temp = e.target.value
+    //         setBreakData(breakData => ({...breakData, Test3 : temp}))
+    //     }else if(e.target.id === 'test4'){
+    //         const temp = e.target.value
+    //         setBreakData(breakData => ({...breakData, Test4 : temp}))
+    //     }
+    // }
 
     function startSubmit(e){
         setUserData(userdata => ({...userdata, startTime : new Date()}))
-        setBreakData(breakData => ({...breakData, trial_id : tutorialdata[tutorialIndex]}))
-        setBreakData(breakData => ({...breakData, annotation : "-1"}))
+        setBreakData(breakData => ({...breakData, precision : "-1"}))
+        setBreakData(breakData => ({...breakData, recall : "-1"}))
         setTutorialRender(true)
         setSurveyRender(true)
         setInput(0)
@@ -82,14 +83,15 @@ const SurveyProvider = (props) => {
         setTempBreak({...tempBreak, [tutorialIndex]:breakData});
         window.scrollTo(0, 0);
         e.target.reset();
-        if(tutorialIndex < 59){
-            setBreakData(breakData => ({...breakData, trial_id : tutorialdata[tutorialIndex]}))
-            setBreakData(breakData => ({...breakData, annotation : "-1"}))
-            setBreakData(breakData => ({...breakData, fairpriv : "-1"}))
+        if(tutorialIndex < 19){
+            // setBreakData(breakData => ({...breakData, trial_id : tutorialIndex}))
+            // setBreakData(breakData => ({...breakData, precision : "-1"}))
+            // setBreakData(breakData => ({...breakData, recall : "-1"}))
             setTutorialIndex(tutorialIndex + 1);
         }else{
             setTutorialRender(false);
             setCheckRender(true);
+            setUserData(userdata => ({...userdata, datasets : tutorialdata}))
             setUserData(userdata => ({...userdata, finalSubmit : true}));
             setUserData(userdata => ({...userdata, endTime : new Date()}))
             setTutorialIndex(tutorialIndex + 1);
@@ -100,23 +102,6 @@ const SurveyProvider = (props) => {
         setInput(e.target.value)
     }
     
-    function SelectTutorialData(model){
-        const item_list = require("../assets/data/item_list.json");
-        const sampleData = getRandomSampled(item_list[model], 60);
-        setTutoiraldata(sampleData)
-    }
-
-    function getRandomSampled(arr, size) {
-		var shuffled = arr.slice(0), i = arr.length, temp, index;
-		while (i--) {
-			index = Math.floor((i + 1) * Math.random());
-			temp = shuffled[index];
-			shuffled[index] = shuffled[i];
-			shuffled[i] = temp;
-		}
-		return shuffled.slice(0, size);
-	}
-
     function getSubmit(e){
         if(e.target.name === 'useragree'){
             const temp = e.target.value
@@ -139,13 +124,12 @@ const SurveyProvider = (props) => {
         }else if(e.target.name === 'userfavorgenre'){
             const temp = e.target.value
             setUserData(userdata => ({...userdata, userFavorGenre : temp}))
-        }else if(e.target.name === 'get_model'){
+        }else if(e.target.name === 'precision'){
             const temp = e.target.value
-            setUserData(userdata => ({...userdata, getModel : temp}))
-            SelectTutorialData(temp);
-        }else if(e.target.name === 'annotation'){
+            setBreakData(breakData => ({...breakData, precision : temp}))
+        }else if(e.target.name === 'recall'){
             const temp = e.target.value
-            setBreakData(breakData => ({...breakData, annotation : temp}))
+            setBreakData(breakData => ({...breakData, recall : temp}))
         }
     }
 
@@ -159,7 +143,7 @@ const SurveyProvider = (props) => {
              },
             body: JSON.stringify(userdata)
         };
-        fetch('http://mac-chopin21.kaist.ac.kr:3306/results', requestOptions)
+        fetch('http://143.248.249.113:7777/results', requestOptions)
             .then(response => response.json())
             .then(data => setPostId(data.id));
         alert('Finish Session Thanks :)');
@@ -178,7 +162,6 @@ const SurveyProvider = (props) => {
             breakData,
             postId,
             BreakSubmit,
-            onInput,
             setInput,
             getInput,
             checkSubmit,
